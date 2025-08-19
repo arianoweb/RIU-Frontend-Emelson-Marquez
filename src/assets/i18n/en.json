@@ -1,0 +1,24 @@
+{
+  "heroes": {
+    "noHeroes": "No superheroes available",
+    "error": "Error loading superheroes",
+    "notFound": "Hero not found",
+    "addSuccess": "Hero added successfully",
+    "updateSuccess": "Hero updated successfully",
+    "deleteSuccess": "Hero deleted successfully",
+    "addError": "Error adding hero",
+    "updateError": "Error updating hero",
+    "deleteError": "Error deleting hero"
+  },
+  "common": {
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "yes": "Yes",
+    "no": "No"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "heroes": [
+    {
+      "id": 1,
+      "name": "Superman",
+      "realName": "Clark Kent",
+      "description": "El Hombre de Acero, protector de Metrópolis y la Tierra. Nacido en el planeta Krypton, fue enviado a la Tierra como bebé antes de la destrucción de su mundo natal.",
+      "powers": ["Super fuerza", "Vuelo", "Invulnerabilidad", "Visión de rayos X", "Visión de calor"],
+      "imageUrl": "https://i.pinimg.com/474x/60/a0/f3/60a0f3002e7347007239cc30f956aaeb.jpg",
+      "universe": "DC"
+    },
+    {
+      "id": 2,
+      "name": "Spider-Man",
+      "realName": "Peter Parker",
+      "description": "Un joven que obtuvo poderes arácnidos tras ser mordido por una araña radioactiva. Con gran poder viene gran responsabilidad.",
+      "powers": ["Sentido arácnido", "Trepar paredes", "Super agilidad", "Telarañas"],
+      "imageUrl": "https://i.pinimg.com/736x/ef/60/86/ef60869b82b7bd9a45aef8d916bcd1a9.jpg",
+      "universe": "Marvel"
+    },
+    {
+      "id": 3,
+      "name": "Batman",
+      "realName": "Bruce Wayne",
+      "description": "El Caballero de la Noche, vigilante de Gotham City. Sin superpoderes, pero con una determinación inquebrantable.",
+      "powers": ["Intelecto superior", "Artes marciales", "Tecnología avanzada", "Estrategia"],
+      "imageUrl": "https://i.pinimg.com/474x/4b/c8/8f/4bc88fb1f4575a1c226a90c38f58afcd.jpg",
+      "universe": "DC"
+    },
+    {
+      "id": 4,
+      "name": "Wonder Woman",
+      "realName": "Diana Prince",
+      "description": "Princesa amazona y una de las fundadoras de la Liga de la Justicia. Guerrera bendecida por los dioses griegos.",
+      "powers": ["Super fuerza", "Vuelo", "Lazo de la verdad", "Pulseras indestructibles"],
+      "imageUrl": "https://i.pinimg.com/736x/60/49/9d/60499d918f1a360529c9e199d1b5fbe2.jpg",
+      "universe": "DC"
+    },
+    {
+      "id": 5,
+      "name": "Iron Man",
+      "realName": "Tony Stark",
+      "description": "Genio, multimillonario, playboy, filántropo con una armadura tecnológica de alta tecnología.",
+      "powers": ["Armadura tecnológica", "Vuelo", "Repulsores de energía", "Inteligencia artificial"],
+      "imageUrl": "https://i.pinimg.com/736x/91/4a/fa/914afa9f9d63751d57579db1f2047ba5.jpg",
+      "universe": "Marvel"
+    },
+    {
+      "id": 6,
+      "name": "Captain America",
+      "realName": "Steve Rogers",
+      "description": "Un súper soldado de la Segunda Guerra Mundial, símbolo de libertad y justicia americana.",
+      "powers": ["Fuerza sobrehumana", "Velocidad sobrehumana", "Resistencia sobrehumana", "Escudo indestructible"],
+      "imageUrl": "https://i.pinimg.com/564x/99/13/76/991376c98b1deb56ebb12818e544ac78.jpg",
+      "universe": "Marvel"
+    },
+    {
+      "id": 7,
+      "name": "The Flash",
+      "realName": "Barry Allen",
+      "description": "El hombre más rápido del mundo, con la capacidad de moverse a velocidades que desafían las leyes de la física.",
+      "powers": ["Super velocidad", "Vibración molecular", "Viaje en el tiempo", "Reflejos sobrehumanos"],
+      "imageUrl": "https://i.pinimg.com/736x/9e/91/2e/9e912ea5f06a90ee90e379780d4d6242.jpg",
+      "universe": "DC"
+    },
+    {
+      "id": 8,
+      "name": "Thor",
+      "realName": "Thor Odinson",
+      "description": "Dios del trueno asgardiano, portador del mítico martillo Mjolnir.",
+      "powers": ["Fuerza divina", "Control del clima", "Vuelo", "Control del rayo"],
+      "imageUrl": "https://i.pinimg.com/564x/1a/d8/ac/1ad8acefb23ba5087c311bc0fe3cdcad.jpg",
+      "universe": "Marvel"
+    }
+  ]
+}
