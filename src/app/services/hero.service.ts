@@ -46,7 +46,7 @@ export class HeroService {
   private loadHeroesFromJSON(): void {
     this._error.set(null);
 
-    this.http.get<HeroesData>('/assets/data/heroes.json').subscribe({
+    this.http.get<HeroesData>('assets/data/heroes.json').subscribe({
       next: (data) => {
         this._heroes.set(data.heroes);
       },

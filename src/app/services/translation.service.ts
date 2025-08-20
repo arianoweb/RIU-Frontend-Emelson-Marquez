@@ -14,7 +14,7 @@ export class TranslationService {
   }
 
   private loadTranslations(): void {
-    this.http.get('/assets/i18n/en.json').subscribe((translations: any) => {
+    this.http.get('assets/i18n/en.json').subscribe((translations: any) => {
       this.translateService.setTranslation('en', translations);
       this.translateService.use('en');
     });
