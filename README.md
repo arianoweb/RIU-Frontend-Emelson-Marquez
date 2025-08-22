@@ -1,2 +1,46 @@
-# RIU-Frontend-Emelson-Marquez
-Prueba técnica frontend
+# 🦸‍♂️ Heroes App
+
+Aplicación Angular para gestión de superhéroes.
+
+## 🔧 Tecnologías
+
+- **Angular 18**
+- **Angular Material**
+- **TypeScript**
+
+## 🚀 Instalación y Ejecución
+
+```bash
+# Instalar dependencias
+npm install
+
+# Ejecutar aplicación
+npm start
+```
+
+Abrir `http://localhost:4200`
+
+## 🐳 Docker (Alternativa)
+
+```bash
+# Verificar Docker
+docker --version
+
+# Ejecutar
+npm run docker:up
+
+# Detener
+npm run docker:down
+```
+
+**Requisito**: Docker Desktop ejecutándose.
+
+## 🧪 Testing
+
+```bash
+# Ejecutar tests
+npm test
+
+# Coverage
+npm run coverage
+```
