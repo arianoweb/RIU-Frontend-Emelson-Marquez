@@ -13,8 +13,13 @@
     "test": "npx ng test --watch=false --code-coverage --browsers=ChromeHeadless",
     "test:open": "npx ng test --watch=false --code-coverage --browsers=ChromeHeadless && start coverage/superheroes-app/index.html",
     "coverage": "start coverage/superheroes-app/index.html",
-    "docker:up": "docker-compose up",
-    "docker:down": "docker-compose down"
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose up --build",
+    "docker:logs": "docker-compose logs -f",
+    "check:docker": "docker --version && docker-compose --version",
+    "check:node": "node --version && npm --version",
+    "setup": "npm install && echo \"Proyecto configurado correctamente. Usa 'npm start' o 'npm run docker:up'\""
   },
   "prettier": {
     "printWidth": 100,
