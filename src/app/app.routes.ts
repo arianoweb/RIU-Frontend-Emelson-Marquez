@@ -11,12 +11,12 @@ export const routes: Routes = [
     loadComponent: () => import('./components/hero-list/hero-list.component').then(m => m.HeroListComponent)
   },
   {
-    path: 'hero-detail',
-    loadComponent: () => import('./components/hero-detail/hero-detail.component').then(m => m.HeroDetailComponent)
+    path: 'heroes/new',
+    loadComponent: () => import('./components/hero-list/hero-list.component').then(m => m.HeroListComponent)
   },
   {
-    path: 'hero-detail/:id',
-    loadComponent: () => import('./components/hero-detail/hero-detail.component').then(m => m.HeroDetailComponent)
+    path: 'heroes/edit/:heroId',
+    loadComponent: () => import('./components/hero-list/hero-list.component').then(m => m.HeroListComponent)
   },
   {
     path: '**',

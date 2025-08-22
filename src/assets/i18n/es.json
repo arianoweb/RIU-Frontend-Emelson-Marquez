@@ -1,0 +1,86 @@
+{
+  "heroes": {
+    "title": "Gestión de Héroes",
+    "listTitle": "Lista de Héroes",
+    "heroCount": "héroe(s) encontrado(s)",
+    "searchPlaceholder": "Buscar héroe",
+    "noDataFound": "No se encontraron héroes",
+    "newHero": "NUEVO HÉROE",
+    "addSuccess": "Héroe añadido exitosamente",
+    "updateSuccess": "Héroe actualizado exitosamente",
+    "deleteSuccess": "Héroe eliminado exitosamente",
+    "addError": "Error al añadir héroe",
+    "updateError": "Error al actualizar héroe",
+    "deleteError": "Error al eliminar héroe",
+    "notFound": "Héroe no encontrado",
+    "deleteConfirmTitle": "Confirmar eliminación",
+    "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar a {{heroName}}? Esta acción no se puede deshacer.",
+    "powerRequired": "Debe agregar al menos un poder"
+  },
+  "form": {
+    "labels": {
+      "name": "Nombre",
+      "realName": "Nombre Real", 
+      "description": "Descripción",
+      "image": "Imagen",
+      "imageUrl": "URL de Imagen",
+      "universe": "Universo",
+      "powers": "Poderes"
+    },
+    "placeholders": {
+      "heroName": "Nombre del héroe",
+      "realName": "Nombre real",
+      "description": "Descripción del héroe...",
+      "imageUrl": "URL de la imagen",
+      "addPower": "Agregar poder"
+    },
+    "errors": {
+      "required": "{{field}} es requerido",
+      "minLength": "{{field}} debe tener al menos {{length}} caracteres",
+      "maxLength": "{{field}} no puede exceder {{length}} caracteres",
+      "invalidFormat": "{{field}} no tiene un formato válido"
+    }
+  },
+  "actions": {
+    "add": "Añadir",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "close": "Cerrar"
+  },
+  "table": {
+    "columns": {
+      "image": "Imagen",
+      "name": "Nombre",
+      "realName": "Nombre Real",
+      "universe": "Universo",
+      "actions": "Acciones"
+    }
+  },
+  "universes": {
+    "MARVEL": "MARVEL",
+    "Marvel": "MARVEL",
+    "DC": "DC",
+    "OTHER": "OTRO",
+    "Other": "OTRO"
+  },
+  "tooltips": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Eliminar"
+  },
+  "pagination": {
+    "itemsPerPage": "Elementos por página",
+    "firstPage": "Primera página",
+    "lastPage": "Última página",
+    "nextPage": "Página siguiente",
+    "previousPage": "Página anterior",
+    "ofLabel": "de"
+  },
+  "dialog": {
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
+  }
+}

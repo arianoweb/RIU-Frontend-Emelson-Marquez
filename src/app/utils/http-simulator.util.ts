@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { catchError, of, delay } from 'rxjs';
 
-
 export class HttpRequest {
   private static httpClient: HttpClient;
 
@@ -13,8 +12,7 @@ export class HttpRequest {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,
     callback: () => T,
-    data?: any,
-    delayMs: number = 500
+    data?: unknown
   ): void {
 
     const httpMethods = {
@@ -25,36 +23,34 @@ export class HttpRequest {
     };
 
     httpMethods[method]().pipe(
-      delay(delayMs),
       catchError(() => of(null))
     ).subscribe(() => {
       callback();
     });
   }
 
-  static fromPost<T>(url: string, data: any, callback: () => T, delayMs?: number): void {
-    this.execute('POST', url, callback, data, delayMs);
+  static fromPost<T>(url: string, data: unknown, callback: () => T): void {
+    this.execute('POST', url, callback, data);
   }
 
-  static fromPut<T>(url: string, data: any, callback: () => T, delayMs?: number): void {
-    this.execute('PUT', url, callback, data, delayMs);
+  static fromPut<T>(url: string, data: unknown, callback: () => T): void {
+    this.execute('PUT', url, callback, data);
   }
 
-  static fromDelete<T>(url: string, callback: () => T, delayMs?: number): void {
-    this.execute('DELETE', url, callback, undefined, delayMs);
+  static fromDelete<T>(url: string, callback: () => T): void {
+    this.execute('DELETE', url, callback);
   }
 
-  static fromGet<T>(url: string, callback: () => T, delayMs?: number): void {
-    this.execute('GET', url, callback, undefined, delayMs);
+  static fromGet<T>(url: string, callback: () => T): void {
+    this.execute('GET', url, callback);
   }
 
   static fromHttp<T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,
     callback: () => T,
-    data?: any,
-    delayMs?: number
+    data?: unknown
   ): void {
-    this.execute(method, url, callback, data, delayMs);
+    this.execute(method, url, callback, data);
   }
 }

@@ -1,0 +1,196 @@
+<div class="hero-management-container">
+  @if (isFormVisible()) {
+  <div class="form-section">
+    <div class="form-layout">
+      <div class="image-banner">
+        <img [src]="formImageSrc()" alt="Hero Image" class="hero-banner-image" (error)="onImageError()"
+          (load)="onImageLoad()">
+      </div>
+
+      <div class="form-content">
+        <div class="form-header">
+          <button mat-icon-button type="button" class="back-button" (click)="cancelForm()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+        </div>
+        <form [formGroup]="heroForm" (ngSubmit)="onSubmit()" class="hero-form">
+          <div class="form-group">
+            <label class="form-label">{{ 'form.labels.name' | translate }}</label>
+            <mat-form-field appearance="fill" class="dark-input">
+              <input matInput formControlName="name" [placeholder]="'form.placeholders.heroName' | translate">
+              <mat-error>{{ getErrorMessage('name') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ 'form.labels.realName' | translate }}</label>
+            <mat-form-field appearance="fill" class="dark-input">
+              <input matInput formControlName="realName" [placeholder]="'form.placeholders.realName' | translate">
+              <mat-error>{{ getErrorMessage('realName') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ 'form.labels.description' | translate }}</label>
+            <mat-form-field appearance="fill" class="dark-input">
+              <textarea matInput formControlName="description" rows="4"
+                [placeholder]="'form.placeholders.description' | translate"></textarea>
+              <mat-error>{{ getErrorMessage('description') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ 'form.labels.image' | translate }}</label>
+            <mat-form-field appearance="fill" class="dark-input">
+              <input matInput formControlName="imageUrl" [placeholder]="'form.placeholders.imageUrl' | translate" (blur)="onImageUrlBlur()">
+              <mat-error>{{ getErrorMessage('imageUrl') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ 'form.labels.universe' | translate }}</label>
+            <mat-radio-group formControlName="universe" class="universe-radio-group">
+              @for (universe of universes; track universe) {
+              <mat-radio-button [value]="universe" [class]="'radio-' + universe.toLowerCase()">
+                <span class="universe-label">{{ ('universes.' + universe) | translate }}</span>
+              </mat-radio-button>
+              }
+            </mat-radio-group>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ 'form.labels.powers' | translate }}</label>
+            <div class="powers-section">
+
+
+              <div class="powers-chips">
+                <mat-form-field appearance="fill">
+                  <input name="powerInput" [placeholder]="'form.placeholders.addPower' | translate" formControlName="powerInput"
+                    [matChipInputFor]="chipGrid" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="addPower($event)" />
+                  <mat-chip-grid #chipGrid>
+                    @for (power of powersArray.controls; track $index) {
+                    <mat-chip-row (removed)="removePower($index)">
+                      {{power.value}}
+                      <button matChipRemove [attr.aria-label]="'remove ' + power.value">
+                        <mat-icon>cancel</mat-icon>
+                      </button>
+                    </mat-chip-row>
+                    }
+                  </mat-chip-grid>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button mat-button type="button" class="cancel-button" (click)="cancelForm()">
+              {{ 'actions.cancel' | translate }}
+            </button>
+            <button mat-raised-button type="submit" class="save-button"
+              [disabled]="heroForm.invalid || powersArray.length === 0 || isLoading()">
+              {{ 'actions.save' | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  }
+  @else {
+  <div class="list-section">
+
+    <button mat-fab class="add-hero-fab-mobile" (click)="showAddForm()" [matTooltip]="'tooltips.add' | translate">
+      <mat-icon>add</mat-icon>
+    </button>
+    <div class="list-header">
+      <div class="search-section">
+        <mat-form-field appearance="fill" class="search-field dark-input">
+          <input matInput [placeholder]="'heroes.searchPlaceholder' | translate" (input)="onFilterChange($event)" [value]="filterText()">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <div class="list-content">
+      <div class="list-info">
+        <div class="list-info-header">
+          <div class="list-title-section">
+            <h3>{{ 'heroes.listTitle' | translate }}</h3>
+            <span class="hero-count">{{ getHeroCountText() }}</span>
+          </div>
+          <button mat-raised-button class="add-hero-btn" (click)="showAddForm()">
+            {{ 'actions.add' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table mat-table [dataSource]="paginatedHeroes().data" class="heroes-table">
+          <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef>{{ 'table.columns.image' | translate }}</th>
+            <td mat-cell *matCellDef="let hero">
+              <img [src]="getImageSrc(hero)" [alt]="hero.name" class="hero-avatar" (error)="onTableImageError($event, hero)">
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>{{ 'table.columns.name' | translate }}</th>
+            <td mat-cell *matCellDef="let hero">
+              <div class="hero-info">
+                <div class="hero-name">{{ hero.name }}</div>
+                <div class="hero-universe-badge universe-badge universe-{{ hero.universe.toLowerCase() }}">{{ ('universes.' + hero.universe) | translate }}</div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="realName">
+            <th mat-header-cell *matHeaderCellDef class="desktop-only">{{ 'table.columns.realName' | translate }}</th>
+            <td mat-cell *matCellDef="let hero" class="desktop-only">{{ hero.realName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="universe">
+            <th mat-header-cell *matHeaderCellDef class="desktop-only">{{ 'table.columns.universe' | translate }}</th>
+            <td mat-cell *matCellDef="let hero" class="desktop-only">
+              <div class="universe-badge" [class]="'universe-' + hero.universe.toLowerCase()">
+                {{ ('universes.' + hero.universe) | translate }}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>{{ 'table.columns.actions' | translate }}</th>
+            <td mat-cell *matCellDef="let hero">
+              <div class="action-buttons">
+                <button mat-icon-button class="edit-btn" (click)="showEditForm(hero)" [matTooltip]="'tooltips.edit' | translate">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button class="delete-btn" (click)="deleteHero(hero)" [disabled]="isLoading()"
+                  [matTooltip]="'tooltips.delete' | translate">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hero-row"></tr>
+        </table>
+
+        @if (filteredHeroes().length === 0) {
+        <div class="no-data">
+          <mat-icon class="no-data-icon">search_off</mat-icon>
+          <p>{{ 'heroes.noDataFound' | translate }}</p>
+        </div>
+        }
+        @if (filteredHeroes().length > 0) {
+        <mat-paginator [length]="paginatedHeroes().total" [pageSize]="paginatedHeroes().pageSize"
+          [pageIndex]="paginatedHeroes().currentPage - 1" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+        }
+      </div>
+    </div>
+  </div>
+  }
+</div>

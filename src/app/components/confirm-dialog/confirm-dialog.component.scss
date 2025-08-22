@@ -1,0 +1,120 @@
+.confirm-dialog {
+  padding: 0;
+  min-width: 350px;
+  background: #2d2d2d;
+
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 24px 16px;
+    background: #2d2d2d;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+    .warning-icon {
+      color: var(--accent-orange);
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    h2 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+  }
+
+  .dialog-content {
+    padding: 20px 24px;
+    background: #2d2d2d;
+
+    p {
+      margin: 0;
+      color: #cccccc;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+  }
+
+  .dialog-actions {
+    padding: 16px 24px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #2d2d2d;
+
+    .cancel-button {
+      color: var(--text-secondary);
+      border: 1px solid var(--text-secondary);
+      padding: 8px 20px;
+      font-weight: 500;
+
+      &:hover {
+        background-color: rgba(224, 8, 8, 0.1);
+        color: var(--text-primary);
+        border-color: var(--text-primary);
+      }
+    }
+
+    .confirm-button {
+      background-color: var(--text-primary);
+      color: white;
+      padding: 8px 20px;
+      font-weight: 600;
+
+      &:hover {
+        background-color: rgba(224, 8, 8, 0.9);
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .mat-mdc-dialog-container {
+    --mdc-dialog-container-color: var(--bg-primary);
+    --mdc-dialog-supporting-text-color: var(--text-secondary);
+    --mdc-dialog-subhead-color: var(--text-primary);
+    
+    .mdc-dialog__surface {
+      background-color: var(--bg-primary);
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .confirm-dialog {
+    min-width: auto;
+    width: 100%;
+    
+    .dialog-header {
+      padding: 16px;
+      
+      h2 {
+        font-size: 1.1rem;
+      }
+    }
+    
+    .dialog-content {
+      padding: 16px;
+      
+      p {
+        font-size: 0.9rem;
+      }
+    }
+    
+    .dialog-actions {
+      padding: 12px 16px 16px;
+      gap: 8px;
+      
+      .cancel-button,
+      .confirm-button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PaginationService } from './pagination.service';
-import { TranslationService } from './translation.service';
+
 import { HttpRequest } from '../utils/http-simulator.util';
 import { HeroUniverse } from '../enums/hero.enum';
 
@@ -26,15 +26,13 @@ export class HeroService {
   // Inyección de dependencias
   private http = inject(HttpClient);
   private paginationService = inject(PaginationService);
-  private translationService = inject(TranslationService);
 
   // Signals para manejar el estado
   private _heroes = signal<Hero[]>([]);
-  private _error = signal<string | null>(null);
+
 
   // Señales públicas (readonly)
   readonly heroes = this._heroes.asReadonly();
-  readonly error = this._error.asReadonly();
 
   readonly paginatedHeroes = this.paginationService.createPaginatedSignal(() => this.heroes());
 
@@ -44,15 +42,12 @@ export class HeroService {
   }
 
   private loadHeroesFromJSON(): void {
-    this._error.set(null);
-
     this.http.get<HeroesData>('assets/data/heroes.json').subscribe({
       next: (data) => {
         this._heroes.set(data.heroes);
       },
       error: (error) => {
         console.error('Error loading heroes data:', error);
-        this._error.set(this.translationService.get('heroes.error'));
         this._heroes.set([]);
       }
     });
@@ -82,7 +77,7 @@ export class HeroService {
       const heroIndex = currentHeroes.findIndex(h => h.id === id);
       
       if (heroIndex === -1) {
-        console.warn(this.translationService.get('heroes.notFound'));
+        console.warn('Hero not found');
         return;
       }
 
@@ -100,7 +95,7 @@ export class HeroService {
       const heroIndex = currentHeroes.findIndex(h => h.id === id);
       
       if (heroIndex === -1) {
-        console.warn(this.translationService.get('heroes.notFound'));
+        console.warn('Hero not found');
         return;
       }
 
