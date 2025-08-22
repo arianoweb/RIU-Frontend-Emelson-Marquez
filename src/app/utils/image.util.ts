@@ -20,7 +20,7 @@ export class ImageUtil {
       ctx.fillRect(0, 0, 400, 400);
       
       ctx.fillStyle = '#CCCCCC';
-      ctx.font = 'bold 24px Arial';
+      ctx.font = 'bold 16px Arial';
       ctx.textAlign = 'center';
       ctx.fillText(name, 200, 200);
     }
