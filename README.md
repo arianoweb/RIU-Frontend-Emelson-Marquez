@@ -31,6 +31,12 @@ npm run docker:up
 
 # Detener
 npm run docker:down
+
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Reconstruir imagen (si hay cambios)
+docker-compose up --build
 ```
 
 **Requisito**: Docker Desktop ejecutándose.
