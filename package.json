@@ -3,14 +3,18 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npm run test:open && ng serve --open",
+    "start": "ng serve --host 0.0.0.0 --port 4200",
+    "start:open": "npm run test:open && ng serve --open",
     "start:dev": "ng serve --open --port 4200",
     "start:test": "npm run test && npm run start:chrome",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "npx ng test --watch=false --code-coverage --browsers=ChromeHeadless",
     "test:open": "npx ng test --watch=false --code-coverage --browsers=ChromeHeadless && start coverage/superheroes-app/index.html",
-    "coverage": "start coverage/superheroes-app/index.html"
+    "coverage": "start coverage/superheroes-app/index.html",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down"
   },
   "prettier": {
     "printWidth": 100,
