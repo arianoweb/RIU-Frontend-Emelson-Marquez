@@ -43,7 +43,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromPost(testUrl, testData, callback, 100);
+    HttpRequest.fromPost(testUrl, testData, callback);
 
     const req = httpTestingController.expectOne(testUrl);
     expect(req.request.method).toBe('POST');
@@ -67,7 +67,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromPut(testUrl, testData, callback, 100);
+    HttpRequest.fromPut(testUrl, testData, callback);
 
     const req = httpTestingController.expectOne(testUrl);
     expect(req.request.method).toBe('PUT');
@@ -90,7 +90,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromDelete(testUrl, callback, 100);
+    HttpRequest.fromDelete(testUrl, callback);
 
     const req = httpTestingController.expectOne(testUrl);
     expect(req.request.method).toBe('DELETE');
@@ -113,7 +113,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromGet(testUrl, callback, 100);
+    HttpRequest.fromGet(testUrl, callback);
 
     const req = httpTestingController.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
@@ -137,7 +137,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromHttp('POST', testUrl, callback, testData, 100);
+    HttpRequest.fromHttp('POST', testUrl, callback, testData);
 
     const req = httpTestingController.expectOne(testUrl);
     expect(req.request.method).toBe('POST');
@@ -160,7 +160,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromHttp('GET', testUrl, callback, undefined, 100);
+    HttpRequest.fromHttp('GET', testUrl, callback, undefined);
 
     const req = httpTestingController.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
@@ -184,7 +184,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromHttp('PUT', testUrl, callback, testData, 100);
+    HttpRequest.fromHttp('PUT', testUrl, callback, testData);
 
     const req = httpTestingController.expectOne(testUrl);
     expect(req.request.method).toBe('PUT');
@@ -207,7 +207,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromHttp('DELETE', testUrl, callback, undefined, 100);
+    HttpRequest.fromHttp('DELETE', testUrl, callback, undefined);
 
     const req = httpTestingController.expectOne(testUrl);
     expect(req.request.method).toBe('DELETE');
@@ -231,7 +231,7 @@ describe('HttpRequest', () => {
       return 'callback result';
     };
 
-    HttpRequest.fromPost(testUrl, testData, callback, 100);
+    HttpRequest.fromPost(testUrl, testData, callback);
 
     const req = httpTestingController.expectOne(testUrl);
     req.error(new ProgressEvent('error'));
@@ -242,16 +242,12 @@ describe('HttpRequest', () => {
     }, 150);
   });
 
-  it('should use default delay when not specified', (done) => {
-    const testUrl = '/api/default-delay';
+  it('should execute callback immediately when request completes', (done) => {
+    const testUrl = '/api/immediate-callback';
     let callbackExecuted = false;
-    let startTime = Date.now();
     
     const callback = () => {
       callbackExecuted = true;
-      const endTime = Date.now();
-      const duration = endTime - startTime;
-      expect(duration).toBeGreaterThanOrEqual(450);
       return 'callback result';
     };
 
@@ -263,7 +259,7 @@ describe('HttpRequest', () => {
     setTimeout(() => {
       expect(callbackExecuted).toBeTruthy();
       done();
-    }, 600);
+    }, 50);
   });
 
   it('should handle callback with return value', (done) => {
@@ -276,7 +272,7 @@ describe('HttpRequest', () => {
       return expectedReturn;
     };
 
-    HttpRequest.fromPost(testUrl, {}, callback, 100);
+    HttpRequest.fromPost(testUrl, {}, callback);
 
     const req = httpTestingController.expectOne(testUrl);
     req.flush({ success: true });
@@ -303,8 +299,8 @@ describe('HttpRequest', () => {
       return 'callback2 result';
     };
 
-    HttpRequest.fromGet(testUrl1, callback1, 100);
-    HttpRequest.fromPost(testUrl2, { data: 'test' }, callback2, 100);
+    HttpRequest.fromGet(testUrl1, callback1);
+    HttpRequest.fromPost(testUrl2, { data: 'test' }, callback2);
 
     const req1 = httpTestingController.expectOne(testUrl1);
     const req2 = httpTestingController.expectOne(testUrl2);

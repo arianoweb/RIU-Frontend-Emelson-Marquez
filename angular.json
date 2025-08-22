@@ -67,6 +67,11 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "open": true,
+            "port": 4200,
+            "host": "localhost"
+          },
           "configurations": {
             "production": {
               "buildTarget": "superheroes-app:build:production"

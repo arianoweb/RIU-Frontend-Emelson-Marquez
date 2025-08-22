@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,25 +11,22 @@ export class TranslationService {
   private http = inject(HttpClient);
 
   constructor() {
-    this.loadTranslations();
+    this.initializeTranslations();
   }
 
-  private loadTranslations(): void {
-    this.http.get('assets/i18n/en.json').subscribe((translations: any) => {
-      this.translateService.setTranslation('en', translations);
-      this.translateService.use('en');
-    });
-  }
+  private async initializeTranslations(): Promise<void> {
+    try {
+      const translations = await firstValueFrom(
+        this.http.get<any>('assets/i18n/es.json')
+      );
 
-  get(key: string): string {
-    return this.translateService.instant(key);
-  }
-
-  setLanguage(language: string): void {
-    this.translateService.use(language);
-  }
-
-  getCurrentLanguage(): string {
-    return this.translateService.currentLang || 'en';
+      this.translateService.setTranslation('es', translations);
+      this.translateService.setDefaultLang('es');
+      this.translateService.use('es');
+    } catch (error) {
+      console.error('Error loading translations:', error);
+      this.translateService.setDefaultLang('es');
+      this.translateService.use('es');
+    }
   }
 }

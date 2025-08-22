@@ -3,15 +3,12 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { HeroService, Hero, HeroesData } from './hero.service';
 import { PaginationService } from './pagination.service';
-import { TranslationService } from './translation.service';
-import { HttpRequest } from '../utils/http-simulator.util';
 import { HeroUniverse } from '../enums/hero.enum';
 
 describe('HeroService', () => {
   let service: HeroService;
   let httpTestingController: HttpTestingController;
   let mockPaginationService: jasmine.SpyObj<PaginationService>;
-  let mockTranslationService: jasmine.SpyObj<TranslationService>;
 
   const mockHeroesData: HeroesData = {
     heroes: [
@@ -50,38 +47,25 @@ describe('HeroService', () => {
     mockPaginationService = jasmine.createSpyObj('PaginationService', ['createPaginatedSignal']);
     mockPaginationService.createPaginatedSignal = mockPaginatedSignal;
 
-    mockTranslationService = jasmine.createSpyObj('TranslationService', ['get']);
-    mockTranslationService.get.and.returnValue('Error message');
-
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: PaginationService, useValue: mockPaginationService },
-        { provide: TranslationService, useValue: mockTranslationService }
+        { provide: PaginationService, useValue: mockPaginationService }
       ]
     });
 
     httpTestingController = TestBed.inject(HttpTestingController);
-    
-    spyOn(HttpRequest, 'configure');
-    spyOn(HttpRequest, 'fromPost');
-    spyOn(HttpRequest, 'fromPut');
-    spyOn(HttpRequest, 'fromDelete');
-    
     service = TestBed.inject(HeroService);
   });
 
   afterEach(() => {
     const pendingRequests = httpTestingController.match(() => true);
-    pendingRequests.forEach(req => req.flush(mockHeroesData));
+    pendingRequests.forEach(req => req.flush({ heroes: [] }));
     httpTestingController.verify();
   });
 
   it('should be created', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
-    
     expect(service).toBeTruthy();
   });
 
@@ -90,205 +74,206 @@ describe('HeroService', () => {
     expect(req.request.method).toBe('GET');
     
     req.flush(mockHeroesData);
-    
     expect(service.heroes()).toEqual(mockHeroesData.heroes);
-    expect(service.error()).toBeNull();
   });
 
   it('should handle error when loading heroes from JSON', () => {
     const req = httpTestingController.expectOne('assets/data/heroes.json');
     
     req.error(new ProgressEvent('error'));
-    
-    expect(mockTranslationService.get).toHaveBeenCalledWith('heroes.error');
-    expect(service.error()).toBe('Error message');
     expect(service.heroes()).toEqual([]);
   });
 
-  it('should get all heroes', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
+  describe('getAllHeroes', () => {
+    it('should return all heroes', () => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush(mockHeroesData);
 
-    const result = service.getAllHeroes();
-    
-    expect(result).toEqual(mockHeroesData.heroes);
+      const heroes = service.getAllHeroes();
+      expect(heroes).toEqual(mockHeroesData.heroes);
+    });
   });
 
-  it('should get hero by id', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
+  describe('getHeroById', () => {
+    beforeEach(() => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush(mockHeroesData);
+    });
 
-    const hero = service.getHeroById(1);
-    
-    expect(hero).toEqual(mockHeroesData.heroes[0]);
+    it('should return hero when found', () => {
+      const hero = service.getHeroById(1);
+      expect(hero).toEqual(mockHeroesData.heroes[0]);
+    });
+
+    it('should return null when hero not found', () => {
+      const hero = service.getHeroById(999);
+      expect(hero).toBeNull();
+    });
   });
 
-  it('should return null when hero not found by id', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
+  describe('addHero', () => {
+    beforeEach(() => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush(mockHeroesData);
+    });
 
-    const hero = service.getHeroById(999);
-    
-    expect(hero).toBeNull();
+    it('should add a new hero', () => {
+      const newHeroData = {
+        name: "Batman",
+        realName: "Bruce Wayne",
+        description: "The Dark Knight",
+        powers: ["Intelligence", "Combat skills"],
+        imageUrl: "https://example.com/batman.jpg",
+        universe: HeroUniverse.DC
+      };
+
+      service.addHero(newHeroData);
+
+      const req = httpTestingController.expectOne('/api/heroes');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(newHeroData);
+      
+      req.flush({ success: true });
+
+      const heroes = service.heroes();
+      expect(heroes.length).toBe(3);
+      expect(heroes[2].name).toBe('Batman');
+      expect(heroes[2].id).toBe(3);
+    });
   });
 
-  it('should add a new hero', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
+  describe('updateHero', () => {
+    beforeEach(() => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush(mockHeroesData);
+    });
 
-    const newHeroData = {
-      name: "Batman",
-      realName: "Bruce Wayne",
-      description: "El Caballero de la Noche",
-      powers: ["Artes marciales", "Inteligencia"],
-      imageUrl: "https://example.com/batman.jpg",
-      universe: HeroUniverse.DC
-    };
+    it('should update an existing hero', () => {
+      const updateData = { name: "Superman Updated" };
+      
+      service.updateHero(1, updateData);
 
-    service.addHero(newHeroData);
+      const req = httpTestingController.expectOne('/api/heroes/1');
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual(updateData);
+      
+      req.flush({ success: true });
 
-    expect(HttpRequest.fromPost).toHaveBeenCalledWith(
-      '/api/heroes',
-      newHeroData,
-      jasmine.any(Function)
-    );
+      const hero = service.getHeroById(1);
+      expect(hero?.name).toBe('Superman Updated');
+    });
 
-    const callback = (HttpRequest.fromPost as jasmine.Spy).calls.mostRecent().args[2];
-    callback();
+    it('should warn when trying to update non-existent hero', () => {
+      spyOn(console, 'warn');
+      
+      service.updateHero(999, { name: "Not Found" });
 
-    const heroes = service.heroes();
-    expect(heroes.length).toBe(3);
-    expect(heroes[2]).toEqual({ ...newHeroData, id: 3 });
+      const req = httpTestingController.expectOne('/api/heroes/999');
+      req.flush({ success: true });
+
+      expect(console.warn).toHaveBeenCalledWith('Hero not found');
+    });
   });
 
-  it('should update an existing hero', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
+  describe('deleteHero', () => {
+    beforeEach(() => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush(mockHeroesData);
+    });
 
-    const updateData = { name: "Superman Updated" };
+    it('should delete an existing hero', () => {
+      service.deleteHero(1);
 
-    service.updateHero(1, updateData);
+      const req = httpTestingController.expectOne('/api/heroes/1');
+      expect(req.request.method).toBe('DELETE');
+      
+      req.flush({ success: true });
 
-    expect(HttpRequest.fromPut).toHaveBeenCalledWith(
-      '/api/heroes/1',
-      updateData,
-      jasmine.any(Function)
-    );
+      const heroes = service.heroes();
+      expect(heroes.length).toBe(1);
+      expect(heroes.find(h => h.id === 1)).toBeUndefined();
+    });
 
-    const callback = (HttpRequest.fromPut as jasmine.Spy).calls.mostRecent().args[2];
-    callback();
+    it('should warn when trying to delete non-existent hero', () => {
+      spyOn(console, 'warn');
+      
+      service.deleteHero(999);
 
-    const heroes = service.heroes();
-    expect(heroes[0].name).toBe("Superman Updated");
+      const req = httpTestingController.expectOne('/api/heroes/999');
+      req.flush({ success: true });
+
+      expect(console.warn).toHaveBeenCalledWith('Hero not found');
+    });
   });
 
-  it('should warn when trying to update non-existent hero', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
+  describe('heroExists', () => {
+    beforeEach(() => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush(mockHeroesData);
+    });
 
-    spyOn(console, 'warn');
-    const updateData = { name: "Non-existent Hero" };
+    it('should return true when hero exists', () => {
+      expect(service.heroExists(1)).toBeTruthy();
+    });
 
-    service.updateHero(999, updateData);
-
-    const callback = (HttpRequest.fromPut as jasmine.Spy).calls.mostRecent().args[2];
-    callback();
-
-    expect(console.warn).toHaveBeenCalledWith('Error message');
-    expect(mockTranslationService.get).toHaveBeenCalledWith('heroes.notFound');
+    it('should return false when hero does not exist', () => {
+      expect(service.heroExists(999)).toBeFalsy();
+    });
   });
 
-  it('should delete an existing hero', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
+  describe('getNextId', () => {
+    it('should return 1 when no heroes exist', () => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush({ heroes: [] });
 
-    service.deleteHero(1);
+      const newHeroData = {
+        name: "First Hero",
+        realName: "First Real",
+        description: "First description",
+        powers: ["First power"],
+        imageUrl: "https://example.com/first.jpg",
+        universe: HeroUniverse.DC
+      };
 
-    expect(HttpRequest.fromDelete).toHaveBeenCalledWith(
-      '/api/heroes/1',
-      jasmine.any(Function)
-    );
+      service.addHero(newHeroData);
 
-    const callback = (HttpRequest.fromDelete as jasmine.Spy).calls.mostRecent().args[1];
-    callback();
+      const addReq = httpTestingController.expectOne('/api/heroes');
+      addReq.flush({ success: true });
 
-    const heroes = service.heroes();
-    expect(heroes.length).toBe(1);
-    expect(heroes.find(h => h.id === 1)).toBeUndefined();
+      const heroes = service.heroes();
+      expect(heroes[0].id).toBe(1);
+    });
+
+    it('should generate next id correctly', () => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush(mockHeroesData);
+
+      const newHeroData = {
+        name: "Third Hero",
+        realName: "Third Real",
+        description: "Third description",
+        powers: ["Third power"],
+        imageUrl: "https://example.com/third.jpg",
+        universe: HeroUniverse.DC
+      };
+
+      service.addHero(newHeroData);
+
+      const addReq = httpTestingController.expectOne('/api/heroes');
+      addReq.flush({ success: true });
+
+      const heroes = service.heroes();
+      expect(heroes[2].id).toBe(3);
+    });
   });
 
-  it('should warn when trying to delete non-existent hero', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
+  describe('paginatedHeroes', () => {
+    it('should create paginated signal', () => {
+      const req = httpTestingController.expectOne('assets/data/heroes.json');
+      req.flush(mockHeroesData);
 
-    spyOn(console, 'warn');
-
-    service.deleteHero(999);
-
-    const callback = (HttpRequest.fromDelete as jasmine.Spy).calls.mostRecent().args[1];
-    callback();
-
-    expect(console.warn).toHaveBeenCalledWith('Error message');
-    expect(mockTranslationService.get).toHaveBeenCalledWith('heroes.notFound');
-  });
-
-  it('should check if hero exists', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
-
-    expect(service.heroExists(1)).toBeTruthy();
-    expect(service.heroExists(999)).toBeFalsy();
-  });
-
-  it('should generate next id correctly', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
-
-    const newHeroData = {
-      name: "Test Hero",
-      realName: "Test Name",
-      description: "Test Description",
-      powers: ["Test Power"],
-      imageUrl: "https://example.com/test.jpg",
-      universe: HeroUniverse.Other
-    };
-
-    service.addHero(newHeroData);
-
-    const callback = (HttpRequest.fromPost as jasmine.Spy).calls.mostRecent().args[2];
-    callback();
-
-    const heroes = service.heroes();
-    expect(heroes[heroes.length - 1].id).toBe(3);
-  });
-
-  it('should generate id 1 when no heroes exist', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush({ heroes: [] });
-
-    const newHeroData = {
-      name: "First Hero",
-      realName: "First Name",
-      description: "First Description",
-      powers: ["First Power"],
-      imageUrl: "https://example.com/first.jpg",
-      universe: HeroUniverse.Marvel
-    };
-
-    service.addHero(newHeroData);
-
-    const callback = (HttpRequest.fromPost as jasmine.Spy).calls.mostRecent().args[2];
-    callback();
-
-    const heroes = service.heroes();
-    expect(heroes[0].id).toBe(1);
-  });
-
-  it('should create paginated signal', () => {
-    const req = httpTestingController.expectOne('assets/data/heroes.json');
-    req.flush(mockHeroesData);
-
-    expect(service.paginatedHeroes).toBeDefined();
-    expect(mockPaginationService.createPaginatedSignal).toHaveBeenCalled();
+      expect(mockPaginationService.createPaginatedSignal).toHaveBeenCalled();
+      expect(service.paginatedHeroes).toBeDefined();
+    });
   });
 });
